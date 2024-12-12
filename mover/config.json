@@ -1,0 +1,16 @@
+{
+  "watch": "/srv/done/",
+  "saveDir": "/mnt/",
+  "movieDir": "movie",
+  "tvDir": "adult",
+  "rss": {
+    "feed": "https://showrss.info/user/3263.rss",
+    "dest": "http://192.168.1.122:9091/transmission/rpc",
+    "auth": {
+      "basic": {
+        "user": "Grant",
+        "password": "Because!"
+      }
+    }
+  }
+}
