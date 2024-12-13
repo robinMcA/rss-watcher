@@ -14,18 +14,22 @@ trait TransmissionFilters {
 
 impl TransmissionFilters for PathBuf {
     fn is_movie(&self) -> bool {
-        let pattern = Regex::new(r"S(\d{2})i").unwrap();
+        let pattern = Regex::new(r"[sS](\d{2})").unwrap();
         match self.file_name() {
             None => false,
-            Some(filename) => !filename.to_str().map(|t| t.contains(".S")).unwrap_or(false),
+            Some(filename) => {
+
+                filename.to_str().map(|t| !pattern.is_match(t)).unwrap_or(true)
+
+            }
         }
     }
 
     fn get_season(&self) -> Option<i8> {
+        let pattern = Regex::new(r"[sS](\d{2})").unwrap();
         match self.file_name() {
             None => None,
             Some(filename) => {
-                let pattern = Regex::new(r"S(\d{2})").unwrap();
                 let season_start = pattern.captures(filename.to_str()?)?.get(1)?.as_str();
                 season_start.parse::<i8>().ok()
             }
@@ -37,13 +41,13 @@ impl TransmissionFilters for PathBuf {
     }
 
     fn get_show_name(&self) -> Option<String> {
+        let pattern = Regex::new(r"[sS](\d{2})").unwrap();
         if self.is_movie() {
             return None;
         };
         match self.file_name() {
             None => None,
             Some(filename) => {
-                let pattern = Regex::new(r"S(\d{2})").unwrap();
                 let season_start = pattern.find(filename.to_str()?)?.start();
                 Some(filename.to_str().unwrap_or("")[0..season_start - 1].to_string())
             }
