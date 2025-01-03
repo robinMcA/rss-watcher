@@ -17,11 +17,10 @@ impl TransmissionFilters for PathBuf {
         let pattern = Regex::new(r"[sS](\d{2})").unwrap();
         match self.file_name() {
             None => false,
-            Some(filename) => {
-
-                filename.to_str().map(|t| !pattern.is_match(t)).unwrap_or(true)
-
-            }
+            Some(filename) => filename
+                .to_str()
+                .map(|t| !pattern.is_match(t))
+                .unwrap_or(true),
         }
     }
 
@@ -48,8 +47,10 @@ impl TransmissionFilters for PathBuf {
         match self.file_name() {
             None => None,
             Some(filename) => {
+                let site_filter = Regex::new(r"[wW]{3}[\s\.]?\w+[\s\.]\w{3}").unwrap();
                 let season_start = pattern.find(filename.to_str()?)?.start();
-                Some(filename.to_str().unwrap_or("")[0..season_start - 1].to_string())
+                let possible = &filename.to_str().unwrap_or("")[0..season_start - 1];
+                Some(site_filter.replace(possible, "").to_string().to_lowercase())
             }
         }
     }
